@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuthState } from "../components/AuthProvider";
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   doc,
   getDoc,
@@ -12,21 +13,111 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import {
+  ArrowLeft,
+  Plus,
+  X,
+  UserPlus,
+  Users,
+  Phone,
+  PhoneCall,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  School,
+  Calendar,
+  Hash,
+} from "lucide-react";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+function StudentRow({ student, index }) {
+  return (
+    <motion.tr
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: index * 0.03 }}
+      className="group hover:bg-surface-50/80 transition-colors duration-150"
+    >
+      <td className="px-5 py-3.5 text-xs text-surface-400 font-medium tabular-nums w-12">
+        {index + 1}
+      </td>
+      <td className="px-5 py-3.5">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-xs font-bold text-primary-600 shrink-0">
+            {student.name?.charAt(0)?.toUpperCase() || "?"}
+          </div>
+          <span className="text-sm font-medium text-surface-800">{student.name}</span>
+        </div>
+      </td>
+      <td className="px-5 py-3.5 text-sm text-surface-500">
+        {student.phone ? (
+          <span className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 text-surface-300" />
+            {student.phone}
+          </span>
+        ) : (
+          <span className="text-surface-300">--</span>
+        )}
+      </td>
+      <td className="px-5 py-3.5 text-sm text-surface-500">
+        {student.parentPhone ? (
+          <span className="flex items-center gap-1.5">
+            <PhoneCall className="w-3.5 h-3.5 text-surface-300" />
+            {student.parentPhone}
+          </span>
+        ) : (
+          <span className="text-surface-300">--</span>
+        )}
+      </td>
+      <td className="px-5 py-3.5 text-sm text-surface-400">
+        {student.createdAt?.toDate
+          ? student.createdAt.toDate().toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+          : "Just now"}
+      </td>
+    </motion.tr>
+  );
+}
+
+function SkeletonRow() {
+  return (
+    <tr>
+      <td className="px-5 py-3.5"><div className="h-3 w-6 rounded skeleton" /></td>
+      <td className="px-5 py-3.5">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg skeleton" />
+          <div className="h-3 w-28 rounded skeleton" />
+        </div>
+      </td>
+      <td className="px-5 py-3.5"><div className="h-3 w-20 rounded skeleton" /></td>
+      <td className="px-5 py-3.5"><div className="h-3 w-20 rounded skeleton" /></td>
+      <td className="px-5 py-3.5"><div className="h-3 w-16 rounded skeleton" /></td>
+    </tr>
+  );
+}
 
 export default function RoomPage() {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuthState();
 
-  /* ── Room state ── */
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  /* ── Form toggle ── */
   const [showForm, setShowForm] = useState(false);
 
-  /* ── Student form state ── */
   const [studentName, setStudentName] = useState("");
   const [phone, setPhone] = useState("");
   const [parentPhone, setParentPhone] = useState("");
@@ -34,11 +125,9 @@ export default function RoomPage() {
   const [formError, setFormError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
-  /* ── Students list state ── */
   const [students, setStudents] = useState([]);
   const [studentsLoading, setStudentsLoading] = useState(true);
 
-  /* ── Fetch room ── */
   useEffect(() => {
     if (!roomId || !db || !user) return;
 
@@ -63,7 +152,6 @@ export default function RoomPage() {
     fetchRoom();
   }, [roomId, user]);
 
-  /* ── Realtime students listener ── */
   useEffect(() => {
     if (!roomId || !db || !user) {
       setStudentsLoading(false);
@@ -80,7 +168,6 @@ export default function RoomPage() {
       q,
       (snapshot) => {
         const list = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-        // Sort client-side: newest first
         list.sort((a, b) => {
           const ta = a.createdAt?.toMillis?.() || 0;
           const tb = b.createdAt?.toMillis?.() || 0;
@@ -98,7 +185,6 @@ export default function RoomPage() {
     return unsubscribe;
   }, [roomId, user]);
 
-  /* ── Add student ── */
   async function handleAddStudent(e) {
     e.preventDefault();
     setFormError("");
@@ -135,71 +221,71 @@ export default function RoomPage() {
     }
   }
 
-  /* ── Loading state ── */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-50">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-3 border-primary-200 border-t-primary-500 animate-spin" />
-          <p className="text-xs text-surface-400">Loading classroom…</p>
+          <Loader2 className="w-6 h-6 text-primary-500 animate-spin" />
+          <p className="text-xs text-surface-400">Loading classroom...</p>
         </div>
       </div>
     );
   }
 
-  /* ── Error state ── */
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-50 px-4">
-        <div className="text-center animate-fade-in">
-          <div className="w-16 h-16 rounded-2xl bg-danger-500/10 flex items-center justify-center mx-auto mb-4 text-3xl">
-            ⚠️
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-danger-50 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-7 h-7 text-danger-500" />
           </div>
           <p className="text-sm font-medium text-surface-700 mb-1">{error}</p>
           <button
             onClick={() => navigate("/dashboard")}
-            className="mt-4 px-5 py-2 rounded-xl bg-primary-500 text-white text-sm font-semibold
-                       hover:bg-primary-600 transition-colors cursor-pointer"
+            className="mt-4 inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-primary-600 text-white text-sm font-semibold
+                       hover:bg-primary-700 transition-colors cursor-pointer"
           >
-            ← Back to Dashboard
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
           </button>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-surface-50">
-      {/* ─── Nav ─── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      {/* Nav */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-200/60">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-3">
               <button
                 id="back-to-dashboard-btn"
                 onClick={() => navigate("/dashboard")}
-                className="w-9 h-9 rounded-xl bg-surface-50 border border-surface-100
+                className="w-8 h-8 rounded-lg bg-surface-50 border border-surface-200/60
                            flex items-center justify-center text-surface-400 hover:text-surface-600
                            hover:bg-surface-100 transition-all duration-200 cursor-pointer"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                </svg>
+                <ArrowLeft className="w-4 h-4" />
               </button>
               <div>
-                <h1 className="text-base font-bold text-surface-800 tracking-tight leading-tight">
+                <h1 className="text-sm font-semibold text-surface-800 tracking-tight leading-tight">
                   {room.roomName}
                 </h1>
                 <p className="text-xs text-surface-400">
                   {studentsLoading
-                    ? "Loading…"
+                    ? "Loading..."
                     : `${students.length} student${students.length !== 1 ? "s" : ""}`}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              {/* Add Student toggle button */}
               <button
                 id="toggle-add-student-btn"
                 onClick={() => setShowForm(!showForm)}
@@ -207,49 +293,48 @@ export default function RoomPage() {
                            transition-all duration-200 cursor-pointer active:scale-[0.98]
                            ${showForm
                              ? "bg-surface-100 text-surface-600 hover:bg-surface-200"
-                             : "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md shadow-primary-500/20 hover:from-primary-600 hover:to-primary-700"
+                             : "bg-primary-600 text-white hover:bg-primary-700"
                            }`}
               >
                 {showForm ? (
                   <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
+                    <X className="w-4 h-4" />
                     Cancel
                   </>
                 ) : (
                   <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
+                    <Plus className="w-4 h-4" />
                     Add Student
                   </>
                 )}
               </button>
 
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-md shadow-primary-500/20">
-                <span className="text-base font-extrabold text-white leading-none">A</span>
+              <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
+                <span className="text-sm font-extrabold text-white leading-none">A</span>
               </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* ─── Content ─── */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* Content */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Room Header */}
-        <div
-          className="bg-gradient-to-r from-primary-500 to-primary-700 rounded-2xl p-6 sm:p-8 text-white
-                     shadow-lg shadow-primary-500/20 animate-fade-in"
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white rounded-2xl border border-surface-200/60 p-6 sm:p-8"
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-3xl">
-                🏫
+              <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center">
+                <School className="w-6 h-6 text-primary-600" />
               </div>
               <div>
-                <h2 className="text-xl font-bold">{room.roomName}</h2>
-                <p className="text-primary-100 text-sm mt-0.5">
+                <h2 className="text-lg font-bold text-surface-900">{room.roomName}</h2>
+                <div className="flex items-center gap-1.5 mt-0.5 text-sm text-surface-400">
+                  <Calendar className="w-3.5 h-3.5" />
                   Created{" "}
                   {room.createdAt?.toDate
                     ? room.createdAt.toDate().toLocaleDateString("en-IN", {
@@ -258,179 +343,210 @@ export default function RoomPage() {
                         year: "numeric",
                       })
                     : "recently"}
-                </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="text-center px-4 py-2 rounded-xl bg-white/10">
-                <p className="text-2xl font-extrabold">{students.length}</p>
-                <p className="text-primary-200 text-xs">
+            <div className="flex items-center gap-4">
+              <div className="text-center px-5 py-3 rounded-xl bg-surface-50 border border-surface-100">
+                <p className="text-2xl font-bold text-surface-900 tabular-nums">{students.length}</p>
+                <p className="text-xs text-surface-400 mt-0.5">
                   {students.length === 1 ? "Student" : "Students"}
                 </p>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* ─── Add Student Form (collapsible) ─── */}
-        {showForm && (
-          <div className="bg-white rounded-2xl border border-surface-100 shadow-sm p-6 animate-fade-in">
-            <h3 className="text-base font-semibold text-surface-800 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-              </svg>
-              Add New Student
-            </h3>
+        {/* Add Student Form */}
+        <AnimatePresence>
+          {showForm && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="overflow-hidden"
+            >
+              <div className="bg-white rounded-2xl border border-surface-200/60 p-6">
+                <h3 className="text-sm font-semibold text-surface-800 mb-4 flex items-center gap-2">
+                  <UserPlus className="w-4 h-4 text-primary-600" />
+                  Add New Student
+                </h3>
 
-            <form onSubmit={handleAddStudent} id="add-student-form">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <label htmlFor="student-name" className="block text-sm font-medium text-surface-700 mb-1.5">
-                    Student Name <span className="text-danger-500">*</span>
-                  </label>
-                  <input
-                    id="student-name"
-                    type="text"
-                    required
-                    value={studentName}
-                    onChange={(e) => { setStudentName(e.target.value); setFormError(""); }}
-                    placeholder="e.g. Priya Sharma"
-                    className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-surface-50
-                               text-surface-800 text-sm placeholder:text-surface-300
-                               focus:outline-none focus:ring-2 focus:ring-primary-400/40 focus:border-primary-400
-                               transition-all duration-200"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="student-phone" className="block text-sm font-medium text-surface-700 mb-1.5">
-                    Phone Number
-                  </label>
-                  <input
-                    id="student-phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="e.g. 9876543210"
-                    className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-surface-50
-                               text-surface-800 text-sm placeholder:text-surface-300
-                               focus:outline-none focus:ring-2 focus:ring-primary-400/40 focus:border-primary-400
-                               transition-all duration-200"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="parent-phone" className="block text-sm font-medium text-surface-700 mb-1.5">
-                    Parent Phone Number
-                  </label>
-                  <input
-                    id="parent-phone"
-                    type="tel"
-                    value={parentPhone}
-                    onChange={(e) => setParentPhone(e.target.value)}
-                    placeholder="e.g. 9123456780"
-                    className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-surface-50
-                               text-surface-800 text-sm placeholder:text-surface-300
-                               focus:outline-none focus:ring-2 focus:ring-primary-400/40 focus:border-primary-400
-                               transition-all duration-200"
-                  />
-                </div>
+                <form onSubmit={handleAddStudent} id="add-student-form">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label htmlFor="student-name" className="block text-sm font-medium text-surface-700 mb-1.5">
+                        Student Name <span className="text-danger-500">*</span>
+                      </label>
+                      <input
+                        id="student-name"
+                        type="text"
+                        required
+                        value={studentName}
+                        onChange={(e) => { setStudentName(e.target.value); setFormError(""); }}
+                        placeholder="e.g. Priya Sharma"
+                        className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
+                                   text-surface-800 text-sm placeholder:text-surface-300
+                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
+                                   transition-all duration-200"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="student-phone" className="block text-sm font-medium text-surface-700 mb-1.5">
+                        Phone Number
+                      </label>
+                      <input
+                        id="student-phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="e.g. 9876543210"
+                        className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
+                                   text-surface-800 text-sm placeholder:text-surface-300
+                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
+                                   transition-all duration-200"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="parent-phone" className="block text-sm font-medium text-surface-700 mb-1.5">
+                        Parent Phone Number
+                      </label>
+                      <input
+                        id="parent-phone"
+                        type="tel"
+                        value={parentPhone}
+                        onChange={(e) => setParentPhone(e.target.value)}
+                        placeholder="e.g. 9123456780"
+                        className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
+                                   text-surface-800 text-sm placeholder:text-surface-300
+                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
+                                   transition-all duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {formError && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="mb-4 flex items-start gap-2 rounded-xl bg-danger-50 border border-danger-400/15 px-4 py-2.5 text-sm text-danger-600"
+                      >
+                        <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                        <span>{formError}</span>
+                      </motion.div>
+                    )}
+
+                    {showSuccess && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="mb-4 flex items-center gap-2 rounded-xl bg-success-50 border border-success-400/20 px-4 py-2.5 text-sm text-success-600"
+                      >
+                        <CheckCircle2 className="w-4 h-4 shrink-0" />
+                        <span>Student added successfully!</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="flex gap-3">
+                    <button
+                      id="add-student-btn"
+                      type="submit"
+                      disabled={adding}
+                      className="px-5 py-2.5 rounded-xl bg-primary-600
+                                 text-white font-semibold text-sm
+                                 hover:bg-primary-700
+                                 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-2
+                                 disabled:opacity-50 disabled:cursor-not-allowed
+                                 transition-all duration-200
+                                 active:scale-[0.98] cursor-pointer
+                                 flex items-center gap-1.5"
+                    >
+                      {adding ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Adding...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4" />
+                          Add Student
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setShowForm(false); setFormError(""); }}
+                      className="px-5 py-2.5 rounded-xl border border-surface-200 bg-white
+                                 text-sm font-medium text-surface-500 hover:bg-surface-50
+                                 transition-all duration-200 cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </form>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-              {formError && (
-                <div className="mb-4 flex items-start gap-2 rounded-xl bg-danger-500/5 border border-danger-400/20 px-4 py-2.5 text-sm text-danger-600 animate-fade-in">
-                  <svg className="w-4 h-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-                  </svg>
-                  <span>{formError}</span>
-                </div>
-              )}
-
-              {showSuccess && (
-                <div className="mb-4 flex items-center gap-2 rounded-xl bg-accent-400/10 border border-accent-400/30 px-4 py-2.5 text-sm text-accent-600 animate-fade-in">
-                  <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                  <span>Student added successfully!</span>
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                <button
-                  id="add-student-btn"
-                  type="submit"
-                  disabled={adding}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600
-                             text-white font-semibold text-sm
-                             hover:from-primary-600 hover:to-primary-700
-                             focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2
-                             disabled:opacity-60 disabled:cursor-not-allowed
-                             transition-all duration-200 shadow-md shadow-primary-500/20
-                             active:scale-[0.98] cursor-pointer"
-                >
-                  {adding ? (
-                    <span className="inline-flex items-center gap-2">
-                      <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                      Adding…
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                      Add Student
-                    </span>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setShowForm(false); setFormError(""); }}
-                  className="px-5 py-2.5 rounded-xl border border-surface-200 bg-surface-50
-                             text-sm font-medium text-surface-500 hover:bg-surface-100
-                             transition-all duration-200 cursor-pointer"
-                >
-                  Close
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* ─── Students Table ─── */}
-        <div className="bg-white rounded-2xl border border-surface-100 shadow-sm animate-slide-up" style={{ animationDelay: "100ms" }}>
-          <div className="px-6 py-4 border-b border-surface-100 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-surface-800 flex items-center gap-2">
-              <svg className="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-              </svg>
+        {/* Students Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="bg-white rounded-2xl border border-surface-200/60 overflow-hidden"
+        >
+          <div className="px-5 py-4 border-b border-surface-100 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-surface-800 flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary-500" />
               Students
             </h3>
-            <span className="text-xs text-surface-300 font-medium">
+            <span className="text-xs text-surface-400 font-medium tabular-nums">
               {students.length} total
             </span>
           </div>
 
           {studentsLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-8 h-8 rounded-full border-3 border-primary-200 border-t-primary-500 animate-spin" />
-                <p className="text-xs text-surface-400">Loading students…</p>
-              </div>
+            <div className="px-5 py-2">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-surface-100">
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider w-12">#</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Student Name</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Phone</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Parent Phone</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Date Added</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-surface-50">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <SkeletonRow key={i} />
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : students.length === 0 ? (
-            <div className="text-center py-16 animate-fade-in">
-              <div className="w-16 h-16 rounded-2xl bg-surface-100 flex items-center justify-center mx-auto mb-4 text-3xl">
-                👨‍🎓
+            <div className="text-center py-16">
+              <div className="w-14 h-14 rounded-2xl bg-surface-100 flex items-center justify-center mx-auto mb-4">
+                <Users className="w-7 h-7 text-surface-300" />
               </div>
-              <p className="text-sm font-medium text-surface-500">No students yet</p>
-              <p className="text-xs text-surface-300 mt-1 mb-4">
+              <p className="text-sm font-semibold text-surface-600">No students yet</p>
+              <p className="text-xs text-surface-400 mt-1 mb-4">
                 Click "Add Student" above to enrol your first student.
               </p>
               {!showForm && (
                 <button
                   onClick={() => setShowForm(true)}
-                  className="px-5 py-2 rounded-xl bg-primary-50 text-primary-600 text-sm font-semibold
+                  className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-primary-50 text-primary-600 text-sm font-semibold
                              hover:bg-primary-100 transition-all duration-200 cursor-pointer"
                 >
-                  + Add First Student
+                  <Plus className="w-4 h-4" />
+                  Add First Student
                 </button>
               )}
             </div>
@@ -439,47 +555,22 @@ export default function RoomPage() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-surface-100 bg-surface-50/50">
-                    <th className="px-6 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider w-12">#</th>
-                    <th className="px-6 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Student Name</th>
-                    <th className="px-6 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Phone</th>
-                    <th className="px-6 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Parent Phone</th>
-                    <th className="px-6 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Date Added</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider w-12">#</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Student Name</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Phone</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Parent Phone</th>
+                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Date Added</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-surface-50">
                   {students.map((s, i) => (
-                    <tr key={s.id} className="hover:bg-surface-50/60 transition-colors duration-150">
-                      <td className="px-6 py-3.5 text-xs text-surface-300 font-medium">{i + 1}</td>
-                      <td className="px-6 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-sm font-bold text-primary-600 shrink-0">
-                            {s.name?.charAt(0)?.toUpperCase() || "?"}
-                          </div>
-                          <span className="text-sm font-medium text-surface-800">{s.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-surface-500">
-                        {s.phone || <span className="text-surface-300">—</span>}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-surface-500">
-                        {s.parentPhone || <span className="text-surface-300">—</span>}
-                      </td>
-                      <td className="px-6 py-3.5 text-sm text-surface-400">
-                        {s.createdAt?.toDate
-                          ? s.createdAt.toDate().toLocaleDateString("en-IN", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            })
-                          : "Just now"}
-                      </td>
-                    </tr>
+                    <StudentRow key={s.id} student={s} index={i} />
                   ))}
                 </tbody>
               </table>
             </div>
           )}
-        </div>
+        </motion.div>
       </main>
     </div>
   );

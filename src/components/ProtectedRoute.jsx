@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuthState } from "./AuthProvider";
+import { Loader2 } from "lucide-react";
 
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuthState();
@@ -7,7 +8,7 @@ export default function ProtectedRoute({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-50">
-        <div className="w-10 h-10 rounded-full border-3 border-primary-200 border-t-primary-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-primary-500 animate-spin" />
       </div>
     );
   }
