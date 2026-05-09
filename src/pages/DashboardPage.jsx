@@ -12,19 +12,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
-import {
-  Bell,
-  LogOut,
-  Plus,
-  ArrowRight,
-  Users,
-  School,
-  CheckCircle2,
-  AlertCircle,
-  Search,
-  LayoutGrid,
-  Loader2,
-} from "lucide-react";
+import { Bell, LogOut, Plus, ArrowRight, Users, School, CircleCheck as CheckCircle2, CircleAlert as AlertCircle, Search, LayoutGrid, Loader as Loader2 } from "lucide-react";
 
 const stagger = {
   hidden: {},

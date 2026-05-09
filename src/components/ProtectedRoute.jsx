@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuthState } from "./AuthProvider";
-import { Loader2 } from "lucide-react";
+import { Loader as Loader2 } from "lucide-react";
 
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuthState();

@@ -13,21 +13,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import {
-  ArrowLeft,
-  Plus,
-  X,
-  UserPlus,
-  Users,
-  Phone,
-  PhoneCall,
-  AlertCircle,
-  CheckCircle2,
-  Loader2,
-  School,
-  Calendar,
-  Hash,
-} from "lucide-react";
+import { ArrowLeft, Plus, X, UserPlus, Users, Phone, PhoneCall, CircleAlert as AlertCircle, CircleCheck as CheckCircle2, Loader as Loader2, School, Calendar, Hash } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },

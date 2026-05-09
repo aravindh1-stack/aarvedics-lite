@@ -7,18 +7,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db, isConfigured } from "../firebase";
-import {
-  LogIn,
-  UserPlus,
-  Mail,
-  Lock,
-  User,
-  AlertCircle,
-  ArrowRight,
-  BookOpen,
-  Shield,
-  Users,
-} from "lucide-react";
+import { LogIn, UserPlus, Mail, Lock, User, CircleAlert as AlertCircle, ArrowRight, BookOpen, Shield, Users } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
