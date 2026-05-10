@@ -7,7 +7,18 @@ import {
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db, isConfigured } from "../firebase";
-import { LogIn, UserPlus, Mail, Lock, User, CircleAlert as AlertCircle, ArrowRight, BookOpen, Shield, Users } from "lucide-react";
+import {
+  LogIn,
+  UserPlus,
+  Mail,
+  Lock,
+  User,
+  CircleAlert as AlertCircle,
+  ArrowRight,
+  BookOpen,
+  Shield,
+  Users,
+} from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -88,20 +99,37 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="min-h-screen flex bg-surface-50">
+    <div className="min-h-screen flex" style={{ background: "var(--background)" }}>
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-surface-900 overflow-hidden">
+      <div
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+        style={{ background: "var(--aarga-primary-navy)" }}
+      >
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary-700 via-primary-800 to-surface-900" />
-          <div className="absolute top-1/4 -left-20 w-80 h-80 rounded-full bg-primary-600/20 blur-3xl" />
-          <div className="absolute bottom-1/4 -right-20 w-96 h-96 rounded-full bg-accent-500/10 blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary-500/5 blur-3xl" />
+          <div
+            className="absolute top-1/4 -left-20 w-80 h-80 rounded-full blur-3xl"
+            style={{ background: "color-mix(in srgb, var(--accent) 15%, transparent)" }}
+          />
+          <div
+            className="absolute bottom-1/4 -right-20 w-96 h-96 rounded-full blur-3xl"
+            style={{ background: "color-mix(in srgb, var(--aarga-blue-glow) 10%, transparent)" }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl"
+            style={{ background: "color-mix(in srgb, var(--accent) 5%, transparent)" }}
+          />
         </div>
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center border"
+                style={{
+                  background: "color-mix(in srgb, var(--accent) 15%, transparent)",
+                  borderColor: "color-mix(in srgb, var(--accent) 20%, transparent)",
+                }}
+              >
                 <span className="text-lg font-extrabold text-white leading-none">A</span>
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
@@ -112,14 +140,17 @@ export default function LoginPage() {
 
           <div className="space-y-8">
             <div>
-              <h2 className="text-4xl font-bold text-white tracking-tight leading-tight">
+              <h2
+                className="text-4xl font-bold text-white tracking-tight leading-tight"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
                 Everything you need
                 <br />
                 to run your
                 <br />
-                <span className="text-primary-300">classrooms.</span>
+                <span style={{ color: "var(--accent)" }}>classrooms.</span>
               </h2>
-              <p className="mt-4 text-surface-300 text-base leading-relaxed max-w-md">
+              <p className="mt-4 text-base leading-relaxed max-w-md" style={{ color: "color-mix(in srgb, #fff 60%, var(--aarga-primary-navy))" }}>
                 A modern platform for educators to manage students, track progress, and streamline classroom operations.
               </p>
             </div>
@@ -127,16 +158,24 @@ export default function LoginPage() {
             <div className="space-y-4">
               {features.map(({ icon: Icon, label }) => (
                 <div key={label} className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-primary-300" />
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center border"
+                    style={{
+                      background: "color-mix(in srgb, var(--accent) 8%, transparent)",
+                      borderColor: "color-mix(in srgb, var(--accent) 15%, transparent)",
+                    }}
+                  >
+                    <Icon className="w-4 h-4" style={{ color: "var(--accent)" }} />
                   </div>
-                  <span className="text-sm text-surface-300 font-medium">{label}</span>
+                  <span className="text-sm font-medium" style={{ color: "color-mix(in srgb, #fff 60%, var(--aarga-primary-navy))" }}>
+                    {label}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <p className="text-xs text-surface-500">
+          <p className="text-xs" style={{ color: "color-mix(in srgb, #fff 30%, var(--aarga-primary-navy))" }}>
             &copy; {new Date().getFullYear()} AarVedics Lite
           </p>
         </div>
@@ -152,20 +191,29 @@ export default function LoginPage() {
           {/* Mobile brand */}
           <motion.div variants={fadeUp} custom={0} className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-2.5 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center shadow-lg shadow-primary-600/20">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
+                style={{ background: "var(--accent)" }}
+              >
                 <span className="text-lg font-extrabold text-white leading-none">A</span>
               </div>
-              <span className="text-xl font-bold text-surface-900 tracking-tight">
+              <span
+                className="text-xl font-bold tracking-tight"
+                style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
+              >
                 AarVedics
               </span>
             </div>
           </motion.div>
 
           <motion.div variants={fadeUp} custom={1}>
-            <h1 className="text-2xl font-bold text-surface-900 tracking-tight">
+            <h1
+              className="text-2xl font-bold tracking-tight"
+              style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
+            >
               {isSignUp ? "Create your account" : "Welcome back"}
             </h1>
-            <p className="mt-1.5 text-sm text-surface-400">
+            <p className="mt-1.5 text-sm" style={{ color: "var(--text-muted)" }}>
               {isSignUp
                 ? "Get started with your free account"
                 : "Sign in to your dashboard to continue"}
@@ -176,13 +224,19 @@ export default function LoginPage() {
             <motion.div
               variants={fadeUp}
               custom={2}
-              className="mt-5 rounded-xl bg-warning-50 border border-warning-400/20 px-4 py-3 text-sm"
+              className="mt-5 rounded-xl border px-4 py-3 text-sm"
+              style={{
+                background: "color-mix(in srgb, var(--accent) 6%, var(--surface))",
+                borderColor: "color-mix(in srgb, var(--accent) 20%, var(--border))",
+              }}
             >
-              <p className="font-semibold text-warning-600 mb-1">Firebase not configured</p>
-              <p className="text-xs text-surface-500 leading-relaxed">
-                Create a <code className="bg-surface-100 px-1.5 py-0.5 rounded text-xs font-mono">.env</code> file
+              <p className="font-semibold mb-1" style={{ color: "var(--accent-hover)" }}>
+                Firebase not configured
+              </p>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                Create a <code className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: "var(--surface-2)" }}>.env</code> file
                 with your Firebase credentials. See{" "}
-                <code className="bg-surface-100 px-1.5 py-0.5 rounded text-xs font-mono">.env.example</code>.
+                <code className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: "var(--surface-2)" }}>.env.example</code>.
               </p>
             </motion.div>
           )}
@@ -200,12 +254,13 @@ export default function LoginPage() {
                   >
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium text-surface-700 mb-1.5"
+                      className="block text-sm font-medium mb-1.5"
+                      style={{ color: "var(--text-primary)" }}
                     >
                       Full Name
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-300" />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                       <input
                         id="name"
                         type="text"
@@ -214,10 +269,7 @@ export default function LoginPage() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Rahul Sharma"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                                   text-surface-800 text-sm placeholder:text-surface-300
-                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                                   transition-all duration-200"
+                        className="brand-input pl-10"
                       />
                     </div>
                   </motion.div>
@@ -227,12 +279,13 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-surface-700 mb-1.5"
+                  className="block text-sm font-medium mb-1.5"
+                  style={{ color: "var(--text-primary)" }}
                 >
                   Email address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-300" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                   <input
                     id="email"
                     type="email"
@@ -241,10 +294,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                               text-surface-800 text-sm placeholder:text-surface-300
-                               focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                               transition-all duration-200"
+                    className="brand-input pl-10"
                   />
                 </div>
               </div>
@@ -252,12 +302,13 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-surface-700 mb-1.5"
+                  className="block text-sm font-medium mb-1.5"
+                  style={{ color: "var(--text-primary)" }}
                 >
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-300" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                   <input
                     id="password"
                     type="password"
@@ -266,10 +317,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                               text-surface-800 text-sm placeholder:text-surface-300
-                               focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                               transition-all duration-200"
+                    className="brand-input pl-10"
                   />
                 </div>
               </div>
@@ -280,7 +328,12 @@ export default function LoginPage() {
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
-                    className="flex items-start gap-2 rounded-xl bg-danger-50 border border-danger-400/15 px-4 py-3 text-sm text-danger-600"
+                    className="flex items-start gap-2 rounded-xl border px-4 py-3 text-sm"
+                    style={{
+                      background: "color-mix(in srgb, var(--danger) 6%, var(--surface))",
+                      borderColor: "color-mix(in srgb, var(--danger) 20%, var(--border))",
+                      color: "var(--danger)",
+                    }}
                   >
                     <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                     <span>{error}</span>
@@ -292,14 +345,7 @@ export default function LoginPage() {
                 id="auth-submit-btn"
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-xl bg-primary-600
-                           text-white font-semibold text-sm
-                           hover:bg-primary-700
-                           focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-2
-                           disabled:opacity-50 disabled:cursor-not-allowed
-                           transition-all duration-200
-                           active:scale-[0.98] cursor-pointer
-                           flex items-center justify-center gap-2"
+                className="brand-btn-primary w-full py-2.5"
               >
                 {loading ? (
                   <>
@@ -324,10 +370,13 @@ export default function LoginPage() {
           <motion.div variants={fadeUp} custom={4} className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-surface-100" />
+                <div className="w-full border-t" style={{ borderColor: "var(--border)" }} />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-surface-50 px-3 text-xs text-surface-300 uppercase tracking-wider font-medium">
+                <span
+                  className="px-3 text-xs uppercase tracking-wider font-medium"
+                  style={{ background: "var(--background)", color: "var(--text-muted)" }}
+                >
                   or
                 </span>
               </div>
@@ -342,11 +391,7 @@ export default function LoginPage() {
                 setIsSignUp(!isSignUp);
                 setError("");
               }}
-              className="w-full py-2.5 rounded-xl border border-surface-200 bg-white
-                         text-sm font-medium text-surface-600
-                         hover:bg-surface-50 hover:border-surface-300
-                         focus:outline-none focus:ring-2 focus:ring-primary-500/20
-                         transition-all duration-200 cursor-pointer"
+              className="brand-btn-secondary w-full py-2.5"
             >
               {isSignUp
                 ? "Already have an account? Sign In"
@@ -357,7 +402,8 @@ export default function LoginPage() {
           <motion.p
             variants={fadeUp}
             custom={6}
-            className="text-center text-xs text-surface-300 mt-8"
+            className="text-center text-xs mt-8"
+            style={{ color: "var(--text-muted)" }}
           >
             &copy; {new Date().getFullYear()} AarVedics Lite. All rights reserved.
           </motion.p>

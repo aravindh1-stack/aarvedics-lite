@@ -13,7 +13,21 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { ArrowLeft, Plus, X, UserPlus, Users, Phone, PhoneCall, CircleAlert as AlertCircle, CircleCheck as CheckCircle2, Loader as Loader2, School, Calendar, Hash } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  X,
+  UserPlus,
+  Users,
+  Phone,
+  PhoneCall,
+  CircleAlert as AlertCircle,
+  CircleCheck as CheckCircle2,
+  Loader as Loader2,
+  School,
+  Calendar,
+} from "lucide-react";
+import { AppShell, FullPageLoader, EmptyState, ErrorBanner } from "../components/layout";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 12 },
@@ -30,40 +44,51 @@ function StudentRow({ student, index }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: index * 0.03 }}
-      className="group hover:bg-surface-50/80 transition-colors duration-150"
+      className="group transition-colors duration-150"
+      style={{ "--hover-bg": "var(--surface-2)" }}
+      onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-2)")}
+      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
     >
-      <td className="px-5 py-3.5 text-xs text-surface-400 font-medium tabular-nums w-12">
+      <td className="px-5 py-3.5 text-xs font-medium tabular-nums w-12" style={{ color: "var(--text-muted)" }}>
         {index + 1}
       </td>
       <td className="px-5 py-3.5">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center text-xs font-bold text-primary-600 shrink-0">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0"
+            style={{
+              background: "color-mix(in srgb, var(--accent) 10%, var(--surface))",
+              color: "var(--accent-hover)",
+            }}
+          >
             {student.name?.charAt(0)?.toUpperCase() || "?"}
           </div>
-          <span className="text-sm font-medium text-surface-800">{student.name}</span>
+          <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+            {student.name}
+          </span>
         </div>
       </td>
-      <td className="px-5 py-3.5 text-sm text-surface-500">
+      <td className="px-5 py-3.5 text-sm" style={{ color: "var(--text-muted)" }}>
         {student.phone ? (
           <span className="flex items-center gap-1.5">
-            <Phone className="w-3.5 h-3.5 text-surface-300" />
+            <Phone className="w-3.5 h-3.5" style={{ color: "var(--text-muted)", opacity: 0.5 }} />
             {student.phone}
           </span>
         ) : (
-          <span className="text-surface-300">--</span>
+          <span style={{ color: "var(--text-muted)", opacity: 0.4 }}>--</span>
         )}
       </td>
-      <td className="px-5 py-3.5 text-sm text-surface-500">
+      <td className="px-5 py-3.5 text-sm" style={{ color: "var(--text-muted)" }}>
         {student.parentPhone ? (
           <span className="flex items-center gap-1.5">
-            <PhoneCall className="w-3.5 h-3.5 text-surface-300" />
+            <PhoneCall className="w-3.5 h-3.5" style={{ color: "var(--text-muted)", opacity: 0.5 }} />
             {student.parentPhone}
           </span>
         ) : (
-          <span className="text-surface-300">--</span>
+          <span style={{ color: "var(--text-muted)", opacity: 0.4 }}>--</span>
         )}
       </td>
-      <td className="px-5 py-3.5 text-sm text-surface-400">
+      <td className="px-5 py-3.5 text-sm" style={{ color: "var(--text-muted)" }}>
         {student.createdAt?.toDate
           ? student.createdAt.toDate().toLocaleDateString("en-IN", {
               day: "numeric",
@@ -208,32 +233,34 @@ export default function RoomPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-6 h-6 text-primary-500 animate-spin" />
-          <p className="text-xs text-surface-400">Loading classroom...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoader message="Loading classroom..." />;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50 px-4">
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{ background: "var(--background)" }}
+      >
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="w-14 h-14 rounded-2xl bg-danger-50 flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-7 h-7 text-danger-500" />
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            style={{
+              background: "color-mix(in srgb, var(--danger) 8%, var(--surface))",
+            }}
+          >
+            <AlertCircle className="w-7 h-7" style={{ color: "var(--danger)" }} />
           </div>
-          <p className="text-sm font-medium text-surface-700 mb-1">{error}</p>
+          <p className="text-sm font-medium mb-1" style={{ color: "var(--text-primary)" }}>
+            {error}
+          </p>
           <button
             onClick={() => navigate("/dashboard")}
-            className="mt-4 inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-primary-600 text-white text-sm font-semibold
-                       hover:bg-primary-700 transition-colors cursor-pointer"
+            className="brand-btn-primary mt-4 inline-flex items-center gap-1.5"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
@@ -243,321 +270,351 @@ export default function RoomPage() {
     );
   }
 
+  const logo = (
+    <div className="flex items-center gap-3">
+      <button
+        id="back-to-dashboard-btn"
+        onClick={() => navigate("/dashboard")}
+        className="w-8 h-8 rounded-lg border flex items-center justify-center transition-all duration-200 cursor-pointer"
+        style={{
+          background: "var(--surface-2)",
+          borderColor: "var(--border)",
+          color: "var(--text-muted)",
+        }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+      </button>
+      <div>
+        <h1
+          className="text-sm font-semibold tracking-tight leading-tight"
+          style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
+        >
+          {room.roomName}
+        </h1>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+          {studentsLoading
+            ? "Loading..."
+            : `${students.length} student${students.length !== 1 ? "s" : ""}`}
+        </p>
+      </div>
+    </div>
+  );
+
+  const navRight = (
+    <div className="flex items-center gap-2">
+      <button
+        id="toggle-add-student-btn"
+        onClick={() => setShowForm(!showForm)}
+        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold
+                   transition-all duration-200 cursor-pointer active:scale-[0.98]"
+        style={{
+          background: showForm ? "var(--surface-2)" : "var(--accent)",
+          color: showForm ? "var(--text-primary)" : "#fff",
+          border: showForm ? "1px solid var(--border)" : "1px solid color-mix(in srgb, var(--accent) 88%, #000)",
+        }}
+      >
+        {showForm ? (
+          <>
+            <X className="w-4 h-4" />
+            Cancel
+          </>
+        ) : (
+          <>
+            <Plus className="w-4 h-4" />
+            Add Student
+          </>
+        )}
+      </button>
+
+      <div
+        className="w-8 h-8 rounded-lg flex items-center justify-center"
+        style={{ background: "var(--accent)" }}
+      >
+        <span className="text-sm font-extrabold text-white leading-none">A</span>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-surface-50">
-      {/* Nav */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-200/60">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center gap-3">
-              <button
-                id="back-to-dashboard-btn"
-                onClick={() => navigate("/dashboard")}
-                className="w-8 h-8 rounded-lg bg-surface-50 border border-surface-200/60
-                           flex items-center justify-center text-surface-400 hover:text-surface-600
-                           hover:bg-surface-100 transition-all duration-200 cursor-pointer"
+    <AppShell logo={logo} navRight={navRight}>
+      {/* Room Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="brand-card p-6 sm:p-8"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{
+                background: "color-mix(in srgb, var(--accent) 10%, var(--surface))",
+              }}
+            >
+              <School className="w-6 h-6" style={{ color: "var(--accent-hover)" }} />
+            </div>
+            <div>
+              <h2
+                className="text-lg font-bold"
+                style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
               >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <div>
-                <h1 className="text-sm font-semibold text-surface-800 tracking-tight leading-tight">
-                  {room.roomName}
-                </h1>
-                <p className="text-xs text-surface-400">
-                  {studentsLoading
-                    ? "Loading..."
-                    : `${students.length} student${students.length !== 1 ? "s" : ""}`}
-                </p>
+                {room.roomName}
+              </h2>
+              <div
+                className="flex items-center gap-1.5 mt-0.5 text-sm"
+                style={{ color: "var(--text-muted)" }}
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                Created{" "}
+                {room.createdAt?.toDate
+                  ? room.createdAt.toDate().toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })
+                  : "recently"}
               </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                id="toggle-add-student-btn"
-                onClick={() => setShowForm(!showForm)}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold
-                           transition-all duration-200 cursor-pointer active:scale-[0.98]
-                           ${showForm
-                             ? "bg-surface-100 text-surface-600 hover:bg-surface-200"
-                             : "bg-primary-600 text-white hover:bg-primary-700"
-                           }`}
-              >
-                {showForm ? (
-                  <>
-                    <X className="w-4 h-4" />
-                    Cancel
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    Add Student
-                  </>
-                )}
-              </button>
-
-              <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
-                <span className="text-sm font-extrabold text-white leading-none">A</span>
-              </div>
-            </div>
+          </div>
+          <div
+            className="text-center px-5 py-3 rounded-xl border"
+            style={{
+              background: "var(--surface-2)",
+              borderColor: "var(--border)",
+            }}
+          >
+            <p
+              className="text-2xl font-bold tabular-nums"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {students.length}
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+              {students.length === 1 ? "Student" : "Students"}
+            </p>
           </div>
         </div>
-      </nav>
+      </motion.div>
 
-      {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Room Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-white rounded-2xl border border-surface-200/60 p-6 sm:p-8"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center">
-                <School className="w-6 h-6 text-primary-600" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-surface-900">{room.roomName}</h2>
-                <div className="flex items-center gap-1.5 mt-0.5 text-sm text-surface-400">
-                  <Calendar className="w-3.5 h-3.5" />
-                  Created{" "}
-                  {room.createdAt?.toDate
-                    ? room.createdAt.toDate().toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                    : "recently"}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-center px-5 py-3 rounded-xl bg-surface-50 border border-surface-100">
-                <p className="text-2xl font-bold text-surface-900 tabular-nums">{students.length}</p>
-                <p className="text-xs text-surface-400 mt-0.5">
-                  {students.length === 1 ? "Student" : "Students"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+      {/* Add Student Form */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden"
+          >
+            <div className="brand-card p-6 mt-6">
+              <h3
+                className="text-sm font-semibold mb-4 flex items-center gap-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                <UserPlus className="w-4 h-4" style={{ color: "var(--accent)" }} />
+                Add New Student
+              </h3>
 
-        {/* Add Student Form */}
-        <AnimatePresence>
-          {showForm && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden"
-            >
-              <div className="bg-white rounded-2xl border border-surface-200/60 p-6">
-                <h3 className="text-sm font-semibold text-surface-800 mb-4 flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-primary-600" />
-                  Add New Student
-                </h3>
-
-                <form onSubmit={handleAddStudent} id="add-student-form">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <label htmlFor="student-name" className="block text-sm font-medium text-surface-700 mb-1.5">
-                        Student Name <span className="text-danger-500">*</span>
-                      </label>
-                      <input
-                        id="student-name"
-                        type="text"
-                        required
-                        value={studentName}
-                        onChange={(e) => { setStudentName(e.target.value); setFormError(""); }}
-                        placeholder="e.g. Priya Sharma"
-                        className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                                   text-surface-800 text-sm placeholder:text-surface-300
-                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                                   transition-all duration-200"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="student-phone" className="block text-sm font-medium text-surface-700 mb-1.5">
-                        Phone Number
-                      </label>
-                      <input
-                        id="student-phone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="e.g. 9876543210"
-                        className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                                   text-surface-800 text-sm placeholder:text-surface-300
-                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                                   transition-all duration-200"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="parent-phone" className="block text-sm font-medium text-surface-700 mb-1.5">
-                        Parent Phone Number
-                      </label>
-                      <input
-                        id="parent-phone"
-                        type="tel"
-                        value={parentPhone}
-                        onChange={(e) => setParentPhone(e.target.value)}
-                        placeholder="e.g. 9123456780"
-                        className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                                   text-surface-800 text-sm placeholder:text-surface-300
-                                   focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                                   transition-all duration-200"
-                      />
-                    </div>
+              <form onSubmit={handleAddStudent} id="add-student-form">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label
+                      htmlFor="student-name"
+                      className="block text-sm font-medium mb-1.5"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      Student Name <span style={{ color: "var(--danger)" }}>*</span>
+                    </label>
+                    <input
+                      id="student-name"
+                      type="text"
+                      required
+                      value={studentName}
+                      onChange={(e) => { setStudentName(e.target.value); setFormError(""); }}
+                      placeholder="e.g. Priya Sharma"
+                      className="brand-input"
+                    />
                   </div>
+                  <div>
+                    <label
+                      htmlFor="student-phone"
+                      className="block text-sm font-medium mb-1.5"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      id="student-phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="e.g. 9876543210"
+                      className="brand-input"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="parent-phone"
+                      className="block text-sm font-medium mb-1.5"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      Parent Phone Number
+                    </label>
+                    <input
+                      id="parent-phone"
+                      type="tel"
+                      value={parentPhone}
+                      onChange={(e) => setParentPhone(e.target.value)}
+                      placeholder="e.g. 9123456780"
+                      className="brand-input"
+                    />
+                  </div>
+                </div>
 
-                  <AnimatePresence>
-                    {formError && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        className="mb-4 flex items-start gap-2 rounded-xl bg-danger-50 border border-danger-400/15 px-4 py-2.5 text-sm text-danger-600"
-                      >
+                <AnimatePresence>
+                  {formError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      className="mb-4"
+                    >
+                      <ErrorBanner>
                         <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                         <span>{formError}</span>
-                      </motion.div>
-                    )}
+                      </ErrorBanner>
+                    </motion.div>
+                  )}
 
-                    {showSuccess && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        className="mb-4 flex items-center gap-2 rounded-xl bg-success-50 border border-success-400/20 px-4 py-2.5 text-sm text-success-600"
-                      >
-                        <CheckCircle2 className="w-4 h-4 shrink-0" />
-                        <span>Student added successfully!</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div className="flex gap-3">
-                    <button
-                      id="add-student-btn"
-                      type="submit"
-                      disabled={adding}
-                      className="px-5 py-2.5 rounded-xl bg-primary-600
-                                 text-white font-semibold text-sm
-                                 hover:bg-primary-700
-                                 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-2
-                                 disabled:opacity-50 disabled:cursor-not-allowed
-                                 transition-all duration-200
-                                 active:scale-[0.98] cursor-pointer
-                                 flex items-center gap-1.5"
+                  {showSuccess && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      className="mb-4 flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm"
+                      style={{
+                        background: "color-mix(in srgb, var(--success) 6%, var(--surface))",
+                        borderColor: "color-mix(in srgb, var(--success) 20%, var(--border))",
+                        color: "var(--success)",
+                      }}
                     >
-                      {adding ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Adding...
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-4 h-4" />
-                          Add Student
-                        </>
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setShowForm(false); setFormError(""); }}
-                      className="px-5 py-2.5 rounded-xl border border-surface-200 bg-white
-                                 text-sm font-medium text-surface-500 hover:bg-surface-50
-                                 transition-all duration-200 cursor-pointer"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>Student added successfully!</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-        {/* Students Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="bg-white rounded-2xl border border-surface-200/60 overflow-hidden"
+                <div className="flex gap-3">
+                  <button
+                    id="add-student-btn"
+                    type="submit"
+                    disabled={adding}
+                    className="brand-btn-primary"
+                  >
+                    {adding ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Adding...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Add Student
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setShowForm(false); setFormError(""); }}
+                    className="brand-btn-secondary"
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Students Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="brand-card overflow-hidden mt-6"
+      >
+        <div
+          className="px-5 py-4 border-b flex items-center justify-between"
+          style={{ borderColor: "var(--border)" }}
         >
-          <div className="px-5 py-4 border-b border-surface-100 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-surface-800 flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary-500" />
-              Students
-            </h3>
-            <span className="text-xs text-surface-400 font-medium tabular-nums">
-              {students.length} total
-            </span>
-          </div>
+          <h3
+            className="text-sm font-semibold flex items-center gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
+            <Users className="w-4 h-4" style={{ color: "var(--accent)" }} />
+            Students
+          </h3>
+          <span className="text-xs font-medium tabular-nums" style={{ color: "var(--text-muted)" }}>
+            {students.length} total
+          </span>
+        </div>
 
-          {studentsLoading ? (
-            <div className="px-5 py-2">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-surface-100">
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider w-12">#</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Student Name</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Phone</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Parent Phone</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Date Added</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-surface-50">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <SkeletonRow key={i} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : students.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-14 h-14 rounded-2xl bg-surface-100 flex items-center justify-center mx-auto mb-4">
-                <Users className="w-7 h-7 text-surface-300" />
-              </div>
-              <p className="text-sm font-semibold text-surface-600">No students yet</p>
-              <p className="text-xs text-surface-400 mt-1 mb-4">
-                Click "Add Student" above to enrol your first student.
-              </p>
-              {!showForm && (
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-primary-50 text-primary-600 text-sm font-semibold
-                             hover:bg-primary-100 transition-all duration-200 cursor-pointer"
+        {studentsLoading ? (
+          <div className="px-5 py-2">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b" style={{ borderColor: "var(--border)" }}>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider w-12" style={{ color: "var(--text-muted)" }}>#</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Student Name</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Phone</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Parent Phone</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Date Added</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <SkeletonRow key={i} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : students.length === 0 ? (
+          <EmptyState
+            icon={<Users className="w-7 h-7" />}
+            title="No students yet"
+            description='Click "Add Student" above to enrol your first student.'
+            actionLabel={!showForm ? "Add First Student" : undefined}
+            onAction={!showForm ? () => setShowForm(true) : undefined}
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr
+                  className="border-b"
+                  style={{
+                    borderColor: "var(--border)",
+                    background: "var(--surface-2)",
+                  }}
                 >
-                  <Plus className="w-4 h-4" />
-                  Add First Student
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-surface-100 bg-surface-50/50">
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider w-12">#</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Student Name</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Phone</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Parent Phone</th>
-                    <th className="px-5 py-3 text-xs font-semibold text-surface-400 uppercase tracking-wider">Date Added</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-surface-50">
-                  {students.map((s, i) => (
-                    <StudentRow key={s.id} student={s} index={i} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </motion.div>
-      </main>
-    </div>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider w-12" style={{ color: "var(--text-muted)" }}>#</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Student Name</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Phone</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Parent Phone</th>
+                  <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Date Added</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((s, i) => (
+                  <StudentRow key={s.id} student={s} index={i} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </motion.div>
+    </AppShell>
   );
 }

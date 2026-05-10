@@ -12,7 +12,17 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
-import { Bell, LogOut, Plus, ArrowRight, Users, School, CircleCheck as CheckCircle2, CircleAlert as AlertCircle, Loader as Loader2 } from "lucide-react";
+import {
+  Bell,
+  LogOut,
+  Plus,
+  ArrowRight,
+  Users,
+  School,
+  CircleCheck as CheckCircle2,
+  CircleAlert as AlertCircle,
+  Loader as Loader2,
+} from "lucide-react";
 import { AppShell, FullPageLoader, EmptyState, ErrorBanner } from "../components/layout";
 
 const stagger = {
@@ -124,7 +134,7 @@ function ClassroomCard({ room, onOpen }) {
           >
             <Users className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--text-muted)" }} />
             <span className="font-semibold tabular-nums" style={{ color: "var(--text-primary)" }}>
-              {studentCount === null ? "…" : studentCount}
+              {studentCount === null ? "..." : studentCount}
             </span>
             <span>{studentCount === 1 ? "student" : "students"}</span>
           </div>
@@ -145,6 +155,22 @@ function ClassroomCard({ room, onOpen }) {
         </button>
       </div>
     </motion.div>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <div className="brand-card p-5 space-y-4">
+      <div className="flex items-center gap-3">
+        <div className="w-11 h-11 rounded-xl skeleton" />
+        <div className="space-y-2 flex-1">
+          <div className="h-3.5 w-3/4 rounded skeleton" />
+          <div className="h-3 w-1/2 rounded skeleton" />
+        </div>
+      </div>
+      <div className="h-7 w-24 rounded-lg skeleton" />
+      <div className="h-10 w-full rounded-xl skeleton" />
+    </div>
   );
 }
 
@@ -258,21 +284,18 @@ export default function DashboardPage() {
   }
 
   const logo = (
-    <div className="flex items-center gap-3 min-w-0">
+    <div className="flex items-center gap-2.5">
       <div
-        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
-        style={{ backgroundColor: "#0A192F" }}
+        className="w-8 h-8 rounded-lg flex items-center justify-center"
+        style={{ background: "var(--accent)" }}
       >
         <span className="text-sm font-extrabold text-white leading-none">A</span>
       </div>
       <span
-        className="text-base font-bold tracking-tight truncate"
-        style={{
-          fontFamily: '"Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif',
-          color: "var(--text-primary)",
-        }}
+        className="text-base font-bold tracking-tight hidden sm:block"
+        style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
       >
-        Aarvedics
+        AarVedics
       </span>
     </div>
   );
@@ -281,43 +304,56 @@ export default function DashboardPage() {
     <div className="flex items-center gap-2">
       <button
         id="notification-btn"
-        type="button"
-        className="relative w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-[1.02]"
+        className="relative w-8 h-8 rounded-lg border flex items-center justify-center transition-all duration-200 cursor-pointer"
         style={{
-          backgroundColor: "var(--surface)",
+          background: "var(--surface-2)",
           borderColor: "var(--border)",
           color: "var(--text-muted)",
         }}
       >
-        <Bell className="w-4 h-4" style={{ color: "#0A192F" }} />
-        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#4F9CF9] ring-2 ring-[var(--surface)]" />
+        <Bell className="w-4 h-4" />
+        <span
+          className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full ring-2"
+          style={{ background: "var(--accent)", ringColor: "var(--surface)" }}
+        />
       </button>
 
-      <div className="hidden sm:block w-px h-6 mx-0.5" style={{ backgroundColor: "var(--border)" }} />
+      <div className="w-px h-5 mx-1 hidden sm:block" style={{ background: "var(--border)" }} />
 
       <div className="flex items-center gap-2">
         <div
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 shadow-sm"
-          style={{ backgroundColor: "var(--accent)", color: "#0A192F" }}
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+          style={{
+            background: "color-mix(in srgb, var(--accent) 12%, var(--surface))",
+            color: "var(--accent-hover)",
+          }}
         >
           {displayName.charAt(0).toUpperCase()}
         </div>
         <span
-          className="hidden sm:inline max-w-[140px] truncate text-sm font-medium"
+          className="text-sm font-medium hidden sm:block max-w-[120px] truncate"
           style={{ color: "var(--text-primary)" }}
         >
           {displayName}
         </span>
         <button
           id="sign-out-btn"
-          type="button"
           onClick={handleSignOut}
           disabled={loggingOut}
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer disabled:opacity-60"
+          className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
+                     text-xs font-medium transition-all duration-200 cursor-pointer"
           style={{ color: "var(--text-muted)" }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = "var(--danger)";
+            e.currentTarget.style.background = "color-mix(in srgb, var(--danger) 6%, var(--surface))";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = "var(--text-muted)";
+            e.currentTarget.style.background = "transparent";
+          }}
         >
-          <LogOut className="w-3.5 h-3.5 shrink-0" />
-          {loggingOut ? "…" : "Sign out"}
+          <LogOut className="w-3.5 h-3.5" />
+          {loggingOut ? "..." : "Sign out"}
         </button>
       </div>
     </div>
@@ -325,183 +361,187 @@ export default function DashboardPage() {
 
   return (
     <AppShell logo={logo} navRight={navRight}>
-      {roomsLoading ? (
-        <FullPageLoader message="Loading classrooms..." />
-      ) : (
-        <>
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-2"
-          >
-            <h1
-              className="text-2xl md:text-3xl font-bold tracking-tight"
-              style={{
-                fontFamily: '"Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif',
-                color: "var(--text-primary)",
-              }}
-            >
-              {greeting},{" "}
-              <span style={{ color: "var(--accent)" }}>{displayName}</span>
-            </h1>
-            <p className="text-sm md:text-base max-w-xl" style={{ color: "var(--text-muted)" }}>
-              Here&apos;s what&apos;s happening with your classrooms today.
-            </p>
-          </motion.div>
+      {/* Greeting */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <h1
+          className="text-2xl font-bold tracking-tight"
+          style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
+        >
+          {greeting}, <span style={{ color: "var(--accent)" }}>{displayName}</span>
+        </h1>
+        <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
+          Here's what's happening with your classrooms today.
+        </p>
+      </motion.div>
 
+      {/* Stats */}
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8"
+      >
+        <StatCard
+          icon={School}
+          label="Classrooms"
+          value={roomsLoading ? "..." : rooms.length}
+          color="bg-blue-50 text-blue-600"
+        />
+        <StatCard
+          icon={Users}
+          label="Total Students"
+          value={totalStudents === null ? "..." : totalStudents}
+          color="bg-teal-50 text-teal-600"
+        />
+        <StatCard
+          icon={CheckCircle2}
+          label="Account Status"
+          value="Active"
+          color="bg-emerald-50 text-emerald-600"
+        />
+      </motion.div>
+
+      {/* Classrooms Section */}
+      <div className="space-y-5 mt-8">
+        <div className="flex items-center justify-between">
+          <h2
+            className="text-lg font-semibold tracking-tight"
+            style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
+          >
+            Your Classrooms
+          </h2>
+          <span className="text-xs font-medium tabular-nums" style={{ color: "var(--text-muted)" }}>
+            {rooms.length} {rooms.length === 1 ? "room" : "rooms"}
+          </span>
+        </div>
+
+        {/* Create Classroom */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="brand-card p-5"
+        >
+          <form onSubmit={handleCreateRoom} className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+            <div className="flex-1">
+              <label
+                htmlFor="room-name"
+                className="block text-sm font-medium mb-1.5"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Create a new classroom
+              </label>
+              <input
+                id="room-name"
+                type="text"
+                value={roomName}
+                onChange={(e) => { setRoomName(e.target.value); setRoomError(""); }}
+                placeholder="e.g. Class 10-A Physics"
+                className="brand-input"
+              />
+            </div>
+            <button
+              id="create-room-btn"
+              type="submit"
+              disabled={creating}
+              className="brand-btn-primary whitespace-nowrap"
+            >
+              {creating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" />
+                  Create Classroom
+                </>
+              )}
+            </button>
+          </form>
+
+          <AnimatePresence>
+            {roomError && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                className="mt-3"
+              >
+                <ErrorBanner>
+                  <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{roomError}</span>
+                </ErrorBanner>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Classrooms Grid */}
+        {roomsLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : rooms.length === 0 ? (
+          <EmptyState
+            icon={<School className="w-7 h-7" />}
+            title="No classrooms yet"
+            description="Create your first classroom above and start adding students."
+          />
+        ) : (
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5 mt-8 md:mt-10"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
           >
-            <StatCard
-              icon={School}
-              label="Classrooms"
-              value={rooms.length}
-              color="bg-[#f7f6ef] text-[#0A192F]"
-            />
-            <StatCard
-              icon={Users}
-              label="Total Students"
-              value={totalStudents === null ? "…" : totalStudents}
-              color="bg-[#eef6fb] text-[#4F9CF9]"
-            />
-            <StatCard
-              icon={CheckCircle2}
-              label="Account Status"
-              value="Active"
-              color="bg-[#eef9f1] text-emerald-600"
-            />
+            {rooms.map((room) => (
+              <ClassroomCard key={room.id} room={room} onOpen={handleOpenRoom} />
+            ))}
           </motion.div>
+        )}
+      </div>
 
-          <div className="mt-10 md:mt-14 space-y-8">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div className="space-y-1">
-                <h2
-                  className="text-2xl md:text-3xl font-bold tracking-tight"
-                  style={{
-                    fontFamily: '"Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif',
-                    color: "var(--text-primary)",
-                  }}
-                >
-                  Your Classrooms
-                </h2>
-                <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-                  Create a room, then open it to add students.
-                </p>
-              </div>
-              <span className="text-xs font-semibold tabular-nums shrink-0" style={{ color: "var(--text-muted)" }}>
-                {rooms.length} {rooms.length === 1 ? "room" : "rooms"}
-              </span>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.05 }}
-              className="brand-card p-6 md:p-8"
+      {/* Footer */}
+      <footer
+        className="border-t mt-12 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6"
+        style={{ borderColor: "var(--border)" }}
+      >
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            &copy; {new Date().getFullYear()} AarVedics Lite
+          </p>
+          <div className="flex gap-4">
+            <a
+              href="#"
+              className="text-xs transition-colors duration-150"
+              style={{ color: "var(--text-muted)" }}
             >
-              <form onSubmit={handleCreateRoom} className="flex flex-col lg:flex-row lg:items-end gap-5 lg:gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <label htmlFor="room-name" className="block text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-                    New classroom
-                  </label>
-                  <input
-                    id="room-name"
-                    type="text"
-                    value={roomName}
-                    onChange={(e) => {
-                      setRoomName(e.target.value);
-                      setRoomError("");
-                    }}
-                    placeholder="e.g. Class 10-A Physics"
-                    className="brand-input rounded-xl py-3"
-                  />
-                </div>
-                <button
-                  id="create-room-btn"
-                  type="submit"
-                  disabled={creating}
-                  className="brand-btn-primary lg:self-end whitespace-nowrap px-6 py-3 rounded-xl shrink-0"
-                >
-                  {creating ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Creating…
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4" />
-                      Create Classroom
-                    </>
-                  )}
-                </button>
-              </form>
-
-              <AnimatePresence>
-                {roomError ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    className="mt-5 flex items-start gap-2"
-                  >
-                    <ErrorBanner className="w-full">
-                      <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-                      <span>{roomError}</span>
-                    </ErrorBanner>
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </motion.div>
-
-            {rooms.length === 0 ? (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <EmptyState
-                  title="No classrooms yet"
-                  description="Create your first classroom to start managing students."
-                  actionLabel="Create classroom"
-                  icon={<School className="w-7 h-7" />}
-                  onAction={() => handleCreateRoom({ preventDefault() {}, stopPropagation() {} })}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                variants={stagger}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5"
-              >
-                {rooms.map((room) => (
-                  <ClassroomCard key={room.id} room={room} onOpen={handleOpenRoom} />
-                ))}
-              </motion.div>
-            )}
+              Privacy
+            </a>
+            <a
+              href="#"
+              className="text-xs transition-colors duration-150"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Terms
+            </a>
+            <a
+              href="#"
+              className="text-xs transition-colors duration-150"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Support
+            </a>
           </div>
-
-          <footer
-            className="mt-14 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-3"
-            style={{ borderColor: "var(--border)" }}
-          >
-            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-              &copy; {new Date().getFullYear()} AarVedics Lite
-            </p>
-            <div className="flex gap-6">
-              <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: "var(--text-muted)" }}>
-                Privacy
-              </a>
-              <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: "var(--text-muted)" }}>
-                Terms
-              </a>
-              <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: "var(--text-muted)" }}>
-                Support
-              </a>
-            </div>
-          </footer>
-        </>
-      )}
+        </div>
+      </footer>
     </AppShell>
   );
 }

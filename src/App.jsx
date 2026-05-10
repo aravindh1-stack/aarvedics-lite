@@ -6,22 +6,13 @@ import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import RoomPage from "./pages/RoomPage";
-import { Loader as Loader2 } from "lucide-react";
+import { FullPageLoader } from "./components/layout";
 
 function AppRoutes() {
   const { user, loading } = useAuthState();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-6 h-6 text-primary-500 animate-spin" />
-          <p className="text-xs text-surface-400 font-medium">
-            Loading...
-          </p>
-        </div>
-      </div>
-    );
+    return <FullPageLoader message="Loading..." />;
   }
 
   return (
