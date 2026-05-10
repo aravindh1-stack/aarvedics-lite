@@ -12,7 +12,8 @@ import {
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
-import { Bell, LogOut, Plus, ArrowRight, Users, School, CircleCheck as CheckCircle2, CircleAlert as AlertCircle, Search, LayoutGrid, Loader as Loader2 } from "lucide-react";
+import { Bell, LogOut, Plus, ArrowRight, Users, School, CircleCheck as CheckCircle2, CircleAlert as AlertCircle, Loader as Loader2 } from "lucide-react";
+import { AppShell, FullPageLoader, EmptyState, ErrorBanner } from "../components/layout";
 
 const stagger = {
   hidden: {},
@@ -30,20 +31,23 @@ const fadeUp = {
   },
 };
 
-function StatCard({ icon: Icon, label, value, color, delay }) {
+function StatCard({ icon: Icon, label, value, color }) {
   return (
     <motion.div
       variants={fadeUp}
-      className="bg-white rounded-2xl border border-surface-200/60 p-5
-                 hover:border-surface-300 hover:shadow-sm transition-all duration-200"
+      className="brand-card p-5 md:p-6 transform transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_-16px_rgba(15,23,42,0.12)]"
     >
       <div className="flex items-center justify-between mb-3">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
           <Icon className="w-5 h-5" />
         </div>
       </div>
-      <p className="text-2xl font-bold text-surface-900 tracking-tight">{value}</p>
-      <p className="text-sm text-surface-400 mt-0.5">{label}</p>
+      <p className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+        {value}
+      </p>
+      <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
+        {label}
+      </p>
     </motion.div>
   );
 }
@@ -79,21 +83,25 @@ function ClassroomCard({ room, onOpen }) {
     <motion.div
       variants={fadeUp}
       layout
-      className="bg-white rounded-2xl border border-surface-200/60
-                  hover:border-surface-300 hover:shadow-md
-                  transition-all duration-200
-                  flex flex-col overflow-hidden group"
+      className="brand-card flex flex-col overflow-hidden group transform transition-all duration-300
+                 hover:-translate-y-1 hover:shadow-[0_16px_48px_-12px_rgba(15,23,42,0.14)]
+                 ring-1 ring-transparent hover:ring-[color-mix(in_srgb,var(--accent)_22%,transparent)]"
     >
-      <div className="p-5 flex flex-col flex-1 gap-4">
+      <div className="p-5 md:p-6 flex flex-col flex-1 gap-5">
         <div className="flex items-start gap-3 min-w-0">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colors[colorIdx]}`}>
+          <div
+            className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner ${colors[colorIdx]}`}
+          >
             <School className="w-5 h-5" />
           </div>
-          <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-surface-800 truncate leading-tight">
+          <div className="min-w-0 flex-1 pt-0.5">
+            <h3
+              className="text-sm font-semibold truncate leading-tight"
+              style={{ color: "var(--text-primary)" }}
+            >
               {room.roomName}
             </h3>
-            <p className="text-xs text-surface-400 mt-0.5">
+            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
               {room.createdAt?.toDate
                 ? room.createdAt.toDate().toLocaleDateString("en-IN", {
                     day: "numeric",
@@ -106,46 +114,37 @@ function ClassroomCard({ room, onOpen }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-50 border border-surface-100">
-            <Users className="w-3.5 h-3.5 text-surface-400" />
-            <span className="text-xs font-semibold text-surface-600">
-              {studentCount === null ? "..." : studentCount}
+          <div
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs"
+            style={{
+              backgroundColor: "var(--surface-2)",
+              borderColor: "var(--border)",
+              color: "var(--text-muted)",
+            }}
+          >
+            <Users className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--text-muted)" }} />
+            <span className="font-semibold tabular-nums" style={{ color: "var(--text-primary)" }}>
+              {studentCount === null ? "…" : studentCount}
             </span>
-            <span className="text-xs text-surface-400">
-              {studentCount === 1 ? "student" : "students"}
-            </span>
+            <span>{studentCount === 1 ? "student" : "students"}</span>
           </div>
         </div>
 
         <button
+          type="button"
           onClick={() => onOpen(room.id)}
-          className="mt-auto w-full py-2.5 rounded-xl bg-surface-50 border border-surface-200
-                     text-surface-700 text-sm font-medium
-                     hover:bg-primary-600 hover:text-white hover:border-primary-600
-                     transition-all duration-200 cursor-pointer active:scale-[0.98]
-                     flex items-center justify-center gap-1.5 group-hover:border-primary-200"
+          className="mt-auto w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold
+                     text-white shadow-sm transition-all duration-200 active:scale-[0.98]
+                     hover:shadow-[0_8px_24px_color-mix(in_srgb,var(--accent)_35%,transparent)]"
+          style={{
+            background: "linear-gradient(180deg, color-mix(in srgb, var(--accent) 96%, #fff) 0%, var(--accent-hover) 100%)",
+          }}
         >
-          Open Classroom
-          <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+          Open classroom
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
         </button>
       </div>
     </motion.div>
-  );
-}
-
-function SkeletonCard() {
-  return (
-    <div className="bg-white rounded-2xl border border-surface-200/60 p-5 space-y-4">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl skeleton" />
-        <div className="space-y-2 flex-1">
-          <div className="h-3.5 w-3/4 rounded skeleton" />
-          <div className="h-3 w-1/2 rounded skeleton" />
-        </div>
-      </div>
-      <div className="h-7 w-24 rounded-lg skeleton" />
-      <div className="h-10 w-full rounded-xl skeleton" />
-    </div>
   );
 }
 
@@ -258,228 +257,251 @@ export default function DashboardPage() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-surface-50">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-surface-200/60">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
-                <span className="text-sm font-extrabold text-white leading-none">A</span>
-              </div>
-              <span className="text-base font-bold text-surface-900 tracking-tight hidden sm:block">
-                AarVedics
-              </span>
-            </div>
+  const logo = (
+    <div className="flex items-center gap-3 min-w-0">
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
+        style={{ backgroundColor: "#0A192F" }}
+      >
+        <span className="text-sm font-extrabold text-white leading-none">A</span>
+      </div>
+      <span
+        className="text-base font-bold tracking-tight truncate"
+        style={{
+          fontFamily: '"Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif',
+          color: "var(--text-primary)",
+        }}
+      >
+        Aarvedics
+      </span>
+    </div>
+  );
 
-            <div className="flex items-center gap-2">
-              <button
-                id="notification-btn"
-                className="relative w-8 h-8 rounded-lg bg-surface-50 border border-surface-200/60
-                           flex items-center justify-center text-surface-400 hover:text-surface-600
-                           hover:bg-surface-100 transition-all duration-200 cursor-pointer"
-              >
-                <Bell className="w-4 h-4" />
-                <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary-500 ring-2 ring-white" />
-              </button>
+  const navRight = (
+    <div className="flex items-center gap-2">
+      <button
+        id="notification-btn"
+        type="button"
+        className="relative w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-[1.02]"
+        style={{
+          backgroundColor: "var(--surface)",
+          borderColor: "var(--border)",
+          color: "var(--text-muted)",
+        }}
+      >
+        <Bell className="w-4 h-4" style={{ color: "#0A192F" }} />
+        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#4F9CF9] ring-2 ring-[var(--surface)]" />
+      </button>
 
-              <div className="w-px h-5 bg-surface-200 mx-1 hidden sm:block" />
+      <div className="hidden sm:block w-px h-6 mx-0.5" style={{ backgroundColor: "var(--border)" }} />
 
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary-100
-                                flex items-center justify-center text-primary-700 text-xs font-bold">
-                  {displayName.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-surface-700 hidden sm:block max-w-[120px] truncate">
-                  {displayName}
-                </span>
-                <button
-                  id="sign-out-btn"
-                  onClick={handleSignOut}
-                  disabled={loggingOut}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg
-                             text-xs font-medium text-surface-400 hover:text-danger-500
-                             hover:bg-danger-50 transition-all duration-200 cursor-pointer"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  {loggingOut ? "..." : "Sign out"}
-                </button>
-              </div>
-            </div>
-          </div>
+      <div className="flex items-center gap-2">
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 shadow-sm"
+          style={{ backgroundColor: "var(--accent)", color: "#0A192F" }}
+        >
+          {displayName.charAt(0).toUpperCase()}
         </div>
-      </nav>
-
-      {/* Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Greeting */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+        <span
+          className="hidden sm:inline max-w-[140px] truncate text-sm font-medium"
+          style={{ color: "var(--text-primary)" }}
         >
-          <h1 className="text-2xl font-bold text-surface-900 tracking-tight">
-            {greeting}, <span className="text-primary-600">{displayName}</span>
-          </h1>
-          <p className="mt-1 text-surface-400 text-sm">
-            Here's what's happening with your classrooms today.
-          </p>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+          {displayName}
+        </span>
+        <button
+          id="sign-out-btn"
+          type="button"
+          onClick={handleSignOut}
+          disabled={loggingOut}
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer disabled:opacity-60"
+          style={{ color: "var(--text-muted)" }}
         >
-          <StatCard
-            icon={School}
-            label="Classrooms"
-            value={roomsLoading ? "..." : rooms.length}
-            color="bg-primary-50 text-primary-600"
-          />
-          <StatCard
-            icon={Users}
-            label="Total Students"
-            value={totalStudents === null ? "..." : totalStudents}
-            color="bg-teal-50 text-teal-600"
-          />
-          <StatCard
-            icon={CheckCircle2}
-            label="Account Status"
-            value="Active"
-            color="bg-emerald-50 text-emerald-600"
-          />
-        </motion.div>
+          <LogOut className="w-3.5 h-3.5 shrink-0" />
+          {loggingOut ? "…" : "Sign out"}
+        </button>
+      </div>
+    </div>
+  );
 
-        {/* Classrooms Section */}
-        <div className="space-y-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-surface-900 tracking-tight">
-              Your Classrooms
-            </h2>
-            <span className="text-xs text-surface-400 font-medium tabular-nums">
-              {rooms.length} {rooms.length === 1 ? "room" : "rooms"}
-            </span>
-          </div>
-
-          {/* Create Classroom */}
+  return (
+    <AppShell logo={logo} navRight={navRight}>
+      {roomsLoading ? (
+        <FullPageLoader message="Loading classrooms..." />
+      ) : (
+        <>
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="bg-white rounded-2xl border border-surface-200/60 p-5"
+            transition={{ duration: 0.4 }}
+            className="space-y-2"
           >
-            <form onSubmit={handleCreateRoom} className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
-              <div className="flex-1">
-                <label htmlFor="room-name" className="block text-sm font-medium text-surface-700 mb-1.5">
-                  Create a new classroom
-                </label>
-                <input
-                  id="room-name"
-                  type="text"
-                  value={roomName}
-                  onChange={(e) => { setRoomName(e.target.value); setRoomError(""); }}
-                  placeholder="e.g. Class 10-A Physics"
-                  className="w-full px-4 py-2.5 rounded-xl border border-surface-200 bg-white
-                             text-surface-800 text-sm placeholder:text-surface-300
-                             focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400
-                             transition-all duration-200"
-                />
-              </div>
-              <button
-                id="create-room-btn"
-                type="submit"
-                disabled={creating}
-                className="px-5 py-2.5 rounded-xl bg-primary-600
-                           text-white font-semibold text-sm whitespace-nowrap
-                           hover:bg-primary-700
-                           focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-2
-                           disabled:opacity-50 disabled:cursor-not-allowed
-                           transition-all duration-200
-                           active:scale-[0.98] cursor-pointer
-                           flex items-center gap-1.5"
-              >
-                {creating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    Create Classroom
-                  </>
-                )}
-              </button>
-            </form>
-
-            <AnimatePresence>
-              {roomError && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  className="mt-3 flex items-start gap-2 rounded-xl bg-danger-50 border border-danger-400/15 px-4 py-2.5 text-sm text-danger-600"
-                >
-                  <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
-                  <span>{roomError}</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <h1
+              className="text-2xl md:text-3xl font-bold tracking-tight"
+              style={{
+                fontFamily: '"Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif',
+                color: "var(--text-primary)",
+              }}
+            >
+              {greeting},{" "}
+              <span style={{ color: "var(--accent)" }}>{displayName}</span>
+            </h1>
+            <p className="text-sm md:text-base max-w-xl" style={{ color: "var(--text-muted)" }}>
+              Here&apos;s what&apos;s happening with your classrooms today.
+            </p>
           </motion.div>
 
-          {/* Classrooms Grid */}
-          {roomsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <SkeletonCard key={i} />
-              ))}
-            </div>
-          ) : rooms.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-16"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-surface-100 flex items-center justify-center mx-auto mb-4">
-                <School className="w-8 h-8 text-surface-300" />
-              </div>
-              <p className="text-sm font-semibold text-surface-600">No classrooms yet</p>
-              <p className="text-sm text-surface-400 mt-1 max-w-xs mx-auto">
-                Create your first classroom above and start adding students.
-              </p>
-            </motion.div>
-          ) : (
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-            >
-              {rooms.map((room) => (
-                <ClassroomCard key={room.id} room={room} onOpen={handleOpenRoom} />
-              ))}
-            </motion.div>
-          )}
-        </div>
-      </main>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5 mt-8 md:mt-10"
+          >
+            <StatCard
+              icon={School}
+              label="Classrooms"
+              value={rooms.length}
+              color="bg-[#f7f6ef] text-[#0A192F]"
+            />
+            <StatCard
+              icon={Users}
+              label="Total Students"
+              value={totalStudents === null ? "…" : totalStudents}
+              color="bg-[#eef6fb] text-[#4F9CF9]"
+            />
+            <StatCard
+              icon={CheckCircle2}
+              label="Account Status"
+              value="Active"
+              color="bg-[#eef9f1] text-emerald-600"
+            />
+          </motion.div>
 
-      {/* Footer */}
-      <footer className="border-t border-surface-200/60 mt-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-surface-400">
-            &copy; {new Date().getFullYear()} AarVedics Lite
-          </p>
-          <div className="flex gap-4">
-            <a href="#" className="text-xs text-surface-400 hover:text-surface-600 transition-colors">Privacy</a>
-            <a href="#" className="text-xs text-surface-400 hover:text-surface-600 transition-colors">Terms</a>
-            <a href="#" className="text-xs text-surface-400 hover:text-surface-600 transition-colors">Support</a>
+          <div className="mt-10 md:mt-14 space-y-8">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-1">
+                <h2
+                  className="text-2xl md:text-3xl font-bold tracking-tight"
+                  style={{
+                    fontFamily: '"Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif',
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  Your Classrooms
+                </h2>
+                <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+                  Create a room, then open it to add students.
+                </p>
+              </div>
+              <span className="text-xs font-semibold tabular-nums shrink-0" style={{ color: "var(--text-muted)" }}>
+                {rooms.length} {rooms.length === 1 ? "room" : "rooms"}
+              </span>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.05 }}
+              className="brand-card p-6 md:p-8"
+            >
+              <form onSubmit={handleCreateRoom} className="flex flex-col lg:flex-row lg:items-end gap-5 lg:gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <label htmlFor="room-name" className="block text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                    New classroom
+                  </label>
+                  <input
+                    id="room-name"
+                    type="text"
+                    value={roomName}
+                    onChange={(e) => {
+                      setRoomName(e.target.value);
+                      setRoomError("");
+                    }}
+                    placeholder="e.g. Class 10-A Physics"
+                    className="brand-input rounded-xl py-3"
+                  />
+                </div>
+                <button
+                  id="create-room-btn"
+                  type="submit"
+                  disabled={creating}
+                  className="brand-btn-primary lg:self-end whitespace-nowrap px-6 py-3 rounded-xl shrink-0"
+                >
+                  {creating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Creating…
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4" />
+                      Create Classroom
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <AnimatePresence>
+                {roomError ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="mt-5 flex items-start gap-2"
+                  >
+                    <ErrorBanner className="w-full">
+                      <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                      <span>{roomError}</span>
+                    </ErrorBanner>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </motion.div>
+
+            {rooms.length === 0 ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <EmptyState
+                  title="No classrooms yet"
+                  description="Create your first classroom to start managing students."
+                  actionLabel="Create classroom"
+                  icon={<School className="w-7 h-7" />}
+                  onAction={() => handleCreateRoom({ preventDefault() {}, stopPropagation() {} })}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5"
+              >
+                {rooms.map((room) => (
+                  <ClassroomCard key={room.id} room={room} onOpen={handleOpenRoom} />
+                ))}
+              </motion.div>
+            )}
           </div>
-        </div>
-      </footer>
-    </div>
+
+          <footer
+            className="mt-14 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-3"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              &copy; {new Date().getFullYear()} AarVedics Lite
+            </p>
+            <div className="flex gap-6">
+              <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: "var(--text-muted)" }}>
+                Privacy
+              </a>
+              <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: "var(--text-muted)" }}>
+                Terms
+              </a>
+              <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: "var(--text-muted)" }}>
+                Support
+              </a>
+            </div>
+          </footer>
+        </>
+      )}
+    </AppShell>
   );
 }

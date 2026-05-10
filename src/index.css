@@ -4,60 +4,40 @@
    AarVedics Lite — Premium SaaS Design System
    ======================================== */
 
+/* Semantic tokens (Linear / Notion / Stripe–inspired: soft contrast, minimal) */
+:root {
+  --background: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #eef1f6;
+  --border: rgba(15, 23, 42, 0.08);
+  --text-primary: #0f1419;
+  --text-muted: #6e7683;
+  --accent: #c9a227;
+  --accent-hover: #a88916;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --radius: 12px;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif;
 
-  /* Primary — Deep Blue */
-  --color-primary-25: #f0f4ff;
-  --color-primary-50: #e8eefb;
-  --color-primary-100: #c7d5f5;
-  --color-primary-200: #a0b9ed;
-  --color-primary-300: #7196e0;
-  --color-primary-400: #4a7ad4;
-  --color-primary-500: #2563eb;
-  --color-primary-600: #1d4ed8;
-  --color-primary-700: #1e40af;
-  --color-primary-800: #1e3a8a;
-  --color-primary-900: #172554;
+  /* Aarga Brand */
+  --aarga-primary-navy: #0A192F; /* primary navy */
+  --aarga-gold: #C9A227; /* gold accent */
+  --aarga-bg: #F5F7FB; /* background */
+  --aarga-text-dark: #0F172A; /* body text */
+  --aarga-blue-glow: #4F9CF9; /* accent glow */
+  --aarga-white-card: #FFFFFF;
 
-  /* Surface / Neutral — Slate */
-  --color-surface-50: #fafbfc;
-  --color-surface-100: #f4f5f7;
-  --color-surface-200: #e8eaed;
-  --color-surface-300: #d1d5db;
-  --color-surface-400: #9ca3af;
-  --color-surface-500: #6b7280;
-  --color-surface-600: #4b5563;
-  --color-surface-700: #374151;
-  --color-surface-800: #1f2937;
-  --color-surface-900: #111827;
-
-  /* Accent — Teal */
-  --color-accent-50: #f0fdfa;
-  --color-accent-100: #ccfbf1;
-  --color-accent-200: #99f6e4;
-  --color-accent-300: #5eead4;
-  --color-accent-400: #2dd4bf;
-  --color-accent-500: #14b8a6;
-  --color-accent-600: #0d9488;
-
-  /* Success — Green */
-  --color-success-50: #f0fdf4;
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-
-  /* Danger — Red */
-  --color-danger-50: #fef2f2;
-  --color-danger-400: #f87171;
-  --color-danger-500: #ef4444;
-  --color-danger-600: #dc2626;
-
-  /* Warning — Amber */
-  --color-warning-50: #fffbeb;
-  --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
+  /* Utility surface tokens for compatibility */
+  --color-surface-50: var(--aarga-bg);
+  --color-surface-100: #eef2f6;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
 }
 
 /* ========================================
@@ -78,11 +58,36 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-surface-50);
-  color: var(--color-surface-800);
-  line-height: 1.5;
+  background-color: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
   min-height: 100vh;
   letter-spacing: -0.01em;
+}
+
+/* Headings use Space Grotesk for a premium look */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-heading);
+  color: var(--aarga-primary-navy);
+}
+
+/* Primary button helper (use Tailwind + these variables in components) */
+.aarga-btn-primary {
+  background: var(--aarga-gold);
+  color: #fff;
+  border-radius: 1rem;
+  transition: transform 150ms ease, box-shadow 180ms ease, background-color 150ms ease;
+}
+.aarga-btn-primary:hover {
+  transform: translateZ(0) scale(1.01);
+  box-shadow: 0 12px 30px rgba(79,156,249,0.08);
+  background-color: #b68b1f;
+}
+
+.aarga-card {
+  background: var(--aarga-white-card);
+  border-radius: 1rem;
+  border: 1px solid rgba(10,25,47,0.06);
 }
 
 /* ========================================
@@ -110,7 +115,7 @@ body {
    Focus ring utility
    ======================================== */
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-2 focus:ring-offset-white;
+  @apply focus:outline-none focus:ring-2 focus:ring-[#4F9CF9]/40 focus:ring-offset-2 focus:ring-offset-white;
 }
 
 /* ========================================
@@ -133,4 +138,157 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-surface-400);
+}
+
+/* ========================================
+   Brand utilities (Phase 1 — use in Phase 3+ pages)
+   ======================================== */
+
+.brand-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .brand-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brand-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.brand-section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .brand-section {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+.brand-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+
+.brand-input {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.brand-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.brand-input:hover {
+  border-color: color-mix(in srgb, var(--text-muted) 35%, transparent);
+}
+
+.brand-input:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--text-primary));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.brand-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #fff;
+  background: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 88%, #000);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 180ms ease,
+    transform 150ms ease;
+}
+
+.brand-btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 28%, transparent);
+  transform: translateY(-1px);
+}
+
+.brand-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.brand-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.brand-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.125rem;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-primary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 180ms ease,
+    transform 150ms ease;
+}
+
+.brand-btn-secondary:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: color-mix(in srgb, var(--text-muted) 28%, var(--border));
+}
+
+.brand-btn-secondary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.brand-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
