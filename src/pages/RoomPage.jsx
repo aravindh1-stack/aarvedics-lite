@@ -342,7 +342,7 @@ export default function RoomPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="brand-card p-6 sm:p-8"
+        className="brand-card p-6 sm:p-8 shadow-sm"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -407,7 +407,7 @@ export default function RoomPage() {
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <div className="brand-card p-6 mt-6">
+            <div className="brand-card p-6 mt-6 shadow-sm">
               <h3
                 className="text-sm font-semibold mb-4 flex items-center gap-2"
                 style={{ color: "var(--text-primary)" }}
@@ -543,7 +543,7 @@ export default function RoomPage() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="brand-card overflow-hidden mt-6"
+        className="brand-card overflow-hidden mt-6 shadow-sm"
       >
         <div
           className="px-5 py-4 border-b flex items-center justify-between"
@@ -562,10 +562,16 @@ export default function RoomPage() {
         </div>
 
         {studentsLoading ? (
-          <div className="px-5 py-2">
+          <div className="px-5 py-3">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b" style={{ borderColor: "var(--border)" }}>
+                <tr
+                  className="border-b"
+                  style={{
+                    borderColor: "var(--border)",
+                    background: "var(--surface-2)",
+                  }}
+                >
                   <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider w-12" style={{ color: "var(--text-muted)" }}>#</th>
                   <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Student Name</th>
                   <th className="px-5 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Phone</th>

@@ -182,11 +182,11 @@ export default function LoginPage() {
       </div>
 
       {/* Right panel — auth form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
+      <div className="flex-1 flex items-center justify-center px-6 py-16">
         <motion.div
           initial="hidden"
           animate="visible"
-          className="w-full max-w-[400px]"
+          className="w-full max-w-[420px]"
         >
           {/* Mobile brand */}
           <motion.div variants={fadeUp} custom={0} className="lg:hidden text-center mb-8">
@@ -208,14 +208,14 @@ export default function LoginPage() {
 
           <motion.div variants={fadeUp} custom={1}>
             <h1
-              className="text-2xl font-bold tracking-tight"
+              className="text-3xl font-bold tracking-tight"
               style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
             >
               {isSignUp ? "Create your account" : "Welcome back"}
             </h1>
-            <p className="mt-1.5 text-sm" style={{ color: "var(--text-muted)" }}>
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>
               {isSignUp
-                ? "Get started with your free account"
+                ? "Get started with your free account in seconds"
                 : "Sign in to your dashboard to continue"}
             </p>
           </motion.div>
@@ -242,7 +242,7 @@ export default function LoginPage() {
           )}
 
           <motion.div variants={fadeUp} custom={3} className="mt-8">
-            <form onSubmit={handleSubmit} className="space-y-4" id="auth-form">
+            <form onSubmit={handleSubmit} className="space-y-5" id="auth-form">
               <AnimatePresence mode="wait">
                 {isSignUp && (
                   <motion.div
@@ -345,7 +345,7 @@ export default function LoginPage() {
                 id="auth-submit-btn"
                 type="submit"
                 disabled={loading}
-                className="brand-btn-primary w-full py-2.5"
+                className="brand-btn-primary w-full py-3 mt-2"
               >
                 {loading ? (
                   <>
@@ -383,7 +383,7 @@ export default function LoginPage() {
             </div>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={5} className="mt-6">
+          <motion.div variants={fadeUp} custom={5} className="mt-5">
             <button
               id="auth-toggle-btn"
               type="button"
@@ -391,7 +391,7 @@ export default function LoginPage() {
                 setIsSignUp(!isSignUp);
                 setError("");
               }}
-              className="brand-btn-secondary w-full py-2.5"
+              className="brand-btn-secondary w-full py-3 font-semibold"
             >
               {isSignUp
                 ? "Already have an account? Sign In"

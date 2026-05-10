@@ -383,7 +383,7 @@ export default function DashboardPage() {
         variants={stagger}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8"
       >
         <StatCard
           icon={School}
@@ -406,7 +406,7 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* Classrooms Section */}
-      <div className="space-y-5 mt-8">
+      <div className="space-y-6 mt-10">
         <div className="flex items-center justify-between">
           <h2
             className="text-lg font-semibold tracking-tight"
@@ -424,7 +424,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="brand-card p-5"
+          className="brand-card p-6"
         >
           <form onSubmit={handleCreateRoom} className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
             <div className="flex-1">
@@ -483,7 +483,7 @@ export default function DashboardPage() {
 
         {/* Classrooms Grid */}
         {roomsLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {[1, 2, 3, 4].map((i) => (
               <SkeletonCard key={i} />
             ))}
@@ -499,7 +499,7 @@ export default function DashboardPage() {
             variants={stagger}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
           >
             {rooms.map((room) => (
               <ClassroomCard key={room.id} room={room} onOpen={handleOpenRoom} />

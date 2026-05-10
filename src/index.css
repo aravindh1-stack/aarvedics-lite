@@ -216,8 +216,8 @@ h1, h2, h3, h4, h5 {
 
 .brand-input:focus {
   outline: none;
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--text-primary));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--text-primary));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .brand-btn-primary {
@@ -244,16 +244,22 @@ h1, h2, h3, h4, h5 {
 
 .brand-btn-primary:hover:not(:disabled) {
   background: var(--accent-hover);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 28%, transparent);
-  transform: translateY(-1px);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--accent) 32%, transparent);
+  transform: translateY(-2px);
 }
 
 .brand-btn-primary:active:not(:disabled) {
   transform: translateY(0);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.brand-btn-primary:focus:not(:disabled) {
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent), 0 8px 24px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 .brand-btn-primary:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -281,11 +287,18 @@ h1, h2, h3, h4, h5 {
 
 .brand-btn-secondary:hover:not(:disabled) {
   background: var(--surface-2);
-  border-color: color-mix(in srgb, var(--text-muted) 28%, var(--border));
+  border-color: color-mix(in srgb, var(--text-muted) 35%, var(--border));
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
 .brand-btn-secondary:active:not(:disabled) {
-  transform: scale(0.99);
+  transform: scale(0.98);
+}
+
+.brand-btn-secondary:focus:not(:disabled) {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
 }
 
 .brand-btn-secondary:disabled {

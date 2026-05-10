@@ -132,7 +132,7 @@ export default function LandingPage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center pt-8 md:pt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center pt-4 md:pt-8 pb-8 md:pb-12">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -155,11 +155,10 @@ export default function LandingPage() {
             <motion.h1
               variants={fadeUp}
               custom={1}
-              className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold leading-[1.1] tracking-tight"
+              className="text-5xl md:text-6xl lg:text-6xl font-bold leading-[1.15] tracking-tight"
               style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
             >
-              Your Private
-              <br />
+              Your Private<br />
               Digital{" "}
               <span style={{ color: "var(--accent)" }}>Classroom</span>
             </motion.h1>
@@ -167,23 +166,23 @@ export default function LandingPage() {
             <motion.p
               variants={fadeUp}
               custom={2}
-              className="text-base md:text-lg leading-relaxed max-w-lg"
+              className="text-base md:text-lg leading-relaxed max-w-xl mt-5"
               style={{ color: "var(--text-muted)" }}
             >
               Manage students, classrooms and communication in one secure dashboard. Built for tutors who value simplicity.
             </motion.p>
 
-            <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-3">
+            <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-3 mt-8">
               <a
                 href="/login"
-                className="brand-btn-primary text-sm px-6 py-3"
+                className="brand-btn-primary text-sm px-6 py-3 font-semibold"
               >
                 Start Free
                 <ArrowRight className="w-4 h-4" />
               </a>
               <a
                 href="#features"
-                className="brand-btn-secondary text-sm px-6 py-3"
+                className="brand-btn-secondary text-sm px-6 py-3 font-semibold"
               >
                 See Features
               </a>
@@ -303,8 +302,8 @@ export default function LandingPage() {
       </section>
 
       {/* Problem / Solution */}
-      <section className="brand-container brand-section">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section className="brand-container brand-section pt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -366,7 +365,7 @@ export default function LandingPage() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map(({ icon: Icon, title, description }, i) => (
             <motion.div
               key={title}
@@ -374,7 +373,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="brand-card p-6 group hover:shadow-[0_12px_40px_-12px_rgba(10,25,47,0.1)] transition-all duration-300"
+              className="brand-card p-6 group hover:shadow-[0_16px_48px_-12px_rgba(10,25,47,0.12)] hover:-translate-y-1 transition-all duration-300"
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 border transition-colors duration-200"
@@ -420,7 +419,7 @@ export default function LandingPage() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {testimonials.map(({ name, role, quote }, i) => (
             <motion.div
               key={name}
@@ -428,7 +427,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="brand-card p-6"
+              className="brand-card p-6 hover:shadow-[0_12px_40px_-12px_rgba(10,25,47,0.1)] transition-all duration-300"
             >
               <div className="flex items-center gap-1 mb-3">
                 {[1, 2, 3, 4, 5].map((s) => (
@@ -456,13 +455,13 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="brand-container brand-section">
+      <section className="brand-container brand-section pt-16">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="brand-card p-8 md:p-12 text-center relative overflow-hidden"
+          className="brand-card p-10 md:p-16 text-center relative overflow-hidden shadow-lg"
           style={{
             borderColor: "color-mix(in srgb, var(--accent) 20%, var(--border))",
           }}
@@ -477,17 +476,17 @@ export default function LandingPage() {
           />
           <div className="relative z-10">
             <h2
-              className="text-2xl md:text-3xl font-bold tracking-tight mb-3"
+              className="text-3xl md:text-4xl font-bold tracking-tight mb-4"
               style={{ fontFamily: "var(--font-heading)", color: "var(--aarga-primary-navy)" }}
             >
               Start using AarVedics Lite today
             </h2>
-            <p className="text-sm md:text-base mb-6 max-w-md mx-auto" style={{ color: "var(--text-muted)" }}>
+            <p className="text-base md:text-lg mb-8 max-w-lg mx-auto" style={{ color: "var(--text-muted)" }}>
               Set up your private tutor dashboard in minutes. Free forever, no credit card required.
             </p>
             <a
               href="/login"
-              className="brand-btn-primary text-sm px-8 py-3 inline-flex items-center gap-2"
+              className="brand-btn-primary text-base px-8 py-3 inline-flex items-center gap-2 font-semibold"
             >
               Get Started Free
               <ArrowRight className="w-4 h-4" />
